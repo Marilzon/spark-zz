@@ -1,11 +1,17 @@
-version: '3.8'
+version: '3'
+
 services:
-    jupyter:
-        image: jupyter/pyspark-notebook:latest
-        container_name: jupyter
-        working_dir: /notebooks
-        ports:
-            - 8888:8888
-        volumes:
-            - ./data/:/data
-            - ./notebooks/:/notebooks
+  spark-master:
+    image: spark-zz
+    container_name: spark-master
+    ports:
+      - "8080:8080"  # Spark UI
+      - "7077:7077"  # Spark Master
+    command: /opt/spark/sbin/start-master.sh
+
+  spark-worker:
+    image: spark-zz
+    container_name: spark-worker
+    ports:
+      - "8081:8081"  # Porta do Spark Worker
+    command: /opt/spark/sbin/start-slave.sh spark://spark-master:7077
